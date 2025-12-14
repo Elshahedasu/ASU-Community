@@ -1,13 +1,13 @@
 import express from "express";
 
 import {
-    registerUser,
-    loginUser,
-    enrollInCourse,
-    getMyCourses,
-    followThread,
-    unfollowThread,
-    updateUserProfile
+  registerUser,
+  loginUser,
+  enrollInCourse,
+  getMyCourses,
+  followThread,
+  unfollowThread,
+  updateUserProfile
 } from "../Controllers/UserController.js";
 
 import { protect } from "../MiddleWare/auth.js";

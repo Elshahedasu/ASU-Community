@@ -4,53 +4,93 @@ import { useNavigate } from "react-router-dom";
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("student");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [error, setError] = useState("");
+
   const navigate = useNavigate();
 
-  const register = () => {
-    if (!name || !email) {
-      alert("Fill all fields");
+  const register = async () => {
+    setError("");
+
+    if (!name || !email || !password || !role) {
+      setError("All fields are required");
       return;
     }
 
-    // mock registration (no backend)
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ name, email, role })
-    );
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
 
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    } 
+      const res = await fetch("http://localhost:5200/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, name,password,role }),
+      });
+    if(!res.ok){
+      alert("Failed to Register");
+      return;
+    }
+    alert(`Registered as ${role}`);
     navigate("/login");
   };
 
   return (
-    <div style={{ maxWidth: "300px", margin: "100px auto" }}>
-      <h2>Register</h2>
+    <div className="container">
+      <h2>Create Account</h2>
+
+      {error && <div className="error">{error}</div>}
 
       <input
-        placeholder="Name"
+        placeholder="Full Name"
         value={name}
         onChange={e => setName(e.target.value)}
       />
 
-      <br /><br />
-
       <input
         type="email"
-        placeholder="Email"
+        placeholder="Email Address"
         value={email}
         onChange={e => setEmail(e.target.value)}
       />
 
-      <br /><br />
+      <input
+        type="password"
+        placeholder="Password (min 6 characters)"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+      />
 
-      <select value={role} onChange={e => setRole(e.target.value)}>
+      {/* ROLE DROPDOWN */}
+      <select
+        value={role}
+        onChange={e => setRole(e.target.value)}
+      >
+        <option value="">Select Role</option>
         <option value="student">Student</option>
         <option value="instructor">Instructor</option>
+        <option value="admin">Admin</option>
       </select>
 
-      <br /><br />
+      <button onClick={register}>Create Account</button>
 
-      <button onClick={register}>Register</button>
+      <p className="muted">
+        Already have an account?{" "}
+        <span className="link" onClick={() => navigate("/login")}>
+          Login
+        </span>
+      </p>
     </div>
   );
 }
+
+
+

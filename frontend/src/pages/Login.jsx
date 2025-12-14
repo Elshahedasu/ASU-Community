@@ -3,26 +3,32 @@ import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("student");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const login = () => {
-    if (!email) {
-      alert("Enter email");
+  const login = async () => {
+    if (!email || !password) {
+      alert("Fill all fields");
       return;
     }
+    
+      const res = await fetch("http://localhost:5200/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      }); 
 
-    // mock login (no backend)
-    localStorage.setItem("user", JSON.stringify({
-      email,
-      role
-    }));
-
-    navigate("/");
+     if(!res.ok){
+      alert("Email or Paswword dont exist");
+      return;
+     } 
+    navigate("/home");
   };
 
   return (
-    <div style={{ maxWidth: "300px", margin: "100px auto" }}>
+    <div className="container">
       <h2>Login</h2>
 
       <input
@@ -32,17 +38,21 @@ export default function Login() {
         onChange={e => setEmail(e.target.value)}
       />
 
-      <br /><br />
-
-      <select value={role} onChange={e => setRole(e.target.value)}>
-        <option value="student">Student</option>
-        <option value="instructor">Instructor</option>
-        <option value="admin">Admin</option>
-      </select>
-
-      <br /><br />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+      />
 
       <button onClick={login}>Login</button>
+
+      <p>
+        No account?{" "}
+        <span className="link" onClick={() => navigate("/register")}>
+          Register
+        </span>
+      </p>
     </div>
   );
 }
