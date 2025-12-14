@@ -13,11 +13,8 @@ import User from "../Models/User.js";
 export const createThread = async (req, res) => {
   try {
     const { courseID, title, tags, creatorID } = req.body;
-    const user = User.find(req.user.id);
     // Create thread
-    if(!user.role == "instructor"||!user.role == "admin"){
-        return res.status(403).json({ message: "Unauthorized" });
-    }
+
     const thread = await Thread.create({
       courseID,
       title,
@@ -26,22 +23,6 @@ export const createThread = async (req, res) => {
       lastActivityAt: new Date()
     });
    
-    // Get enrolled users
-    const enrollments = await CourseEnrollment.find({ courseID });
-
-    // Notify all enrolled users
-    const notifications = enrollments.map(e => ({
-      userID: e.userID,
-      type: "NEW_THREAD",
-      payload: {
-        threadID: thread._id,
-        title: thread.title
-      }
-    }));
-
-    if (notifications.length > 0) {
-      await Notification.insertMany(notifications);
-    }
 
     // Log activity
     await ActivityLog.create({

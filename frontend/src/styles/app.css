@@ -211,3 +211,48 @@ body {
 .course-card button:hover {
     background-color: #1d4ed8;
 }
+
+
+.create-thread-container {
+  max-width: 500px;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.create-thread-container h2 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.create-thread-container input,
+.create-thread-container textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.create-thread-container textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.create-thread-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #0f766e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.create-thread-container button:hover {
+  background-color: #115e59;
+}
