@@ -18,13 +18,12 @@ const Replies = ({ questionId }) => {
     load();
   }, [questionId]);
 
-  // INSTRUCTOR ONLY: post reply
+  /* ======================
+     POST REPLY
+     ====================== */
   const post = async (e) => {
     e.preventDefault();
-
-    if (!user || user.role !== "instructor") {
-      return;
-    }
+    if (!user || !content.trim()) return;
 
     await API.post("/api/replies", {
       _id: `R-${Date.now()}`,
@@ -37,35 +36,71 @@ const Replies = ({ questionId }) => {
     load();
   };
 
+  /* ======================
+     VOTE (LIKE) REPLY
+     ====================== */
+  const vote = async (replyId) => {
+    if (!user) return;
+
+    try {
+      await API.post("/api/votes/reply", {
+        _id: `V-${Date.now()}`,
+        userId: user._id,
+        replyId,
+        voteType: "upvote", // MUST MATCH ENUM
+      });
+
+      load();
+    } catch (err) {
+      alert("You already voted");
+    }
+  };
+
   return (
     <div style={{ marginLeft: "20px", marginTop: "10px" }}>
-      {/* ✅ INSTRUCTOR ONLY: REPLY BOX */}
-      {user?.role === "instructor" && (
-        <form className="form" onSubmit={post}>
+      {/* REPLY BOX */}
+      {user && (
+        <form onSubmit={post}>
           <textarea
-            className="textarea"
             value={content}
-            onChange={e => setContent(e.target.value)}
-            placeholder="Write your answer..."
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Write a reply..."
             required
           />
-          <button className="btn btn-primary">Post Answer</button>
+          <button type="submit">Reply</button>
         </form>
       )}
 
-      {/* ✅ EVERYONE: SEE REPLIES */}
-      {replies.length === 0 ? (
-        <p style={{ color: "gray" }}>No answers yet</p>
-      ) : (
-        replies.map(r => (
-          <div key={r._id} className={`list-item ${r.isBest ? "best" : ""}`}>
-            <p>{r.content}</p>
-            <p className="meta">Answered by: {r.authorId}</p>
+      {/* REPLIES */}
+      {replies.map((r) => (
+        <div
+          key={r._id}
+          style={{
+            border: r.isBest ? "2px solid green" : "1px solid #ccc",
+            padding: "10px",
+            marginTop: "10px",
+          }}
+        >
+          <p>{r.content}</p>
+          <small>By: {r.authorId}</small>
 
-            {r.isBest && <span className="best-badge">Best Answer</span>}
+          <div style={{ marginTop: "5px" }}>
+            {/* 👍 LIKE / VOTE */}
+            {user && (
+              <button onClick={() => vote(r._id)}>
+                👍 Like ({r.upvotes || 0})
+              </button>
+            )}
+
+            {/* BEST ANSWER */}
+            {r.isBest && (
+              <span style={{ marginLeft: "10px", color: "green" }}>
+                ✔ Best Answer
+              </span>
+            )}
           </div>
-        ))
-      )}
+        </div>
+      ))}
     </div>
   );
 };
