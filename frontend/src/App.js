@@ -1,20 +1,24 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Threads from "./pages/Threads";
 import Questions from "./pages/Questions";
-import Register from "./pages/Register";
-import InstructorHome from "./pages/InstructorHome"; // ✅ ADD THIS
-import CreateThread from "./pages/CreateThread"; // NEW IMPORT  
-import Reports from "./pages/Reports";
-import Announcements from "./pages/Announcements";
+
+import InstructorHome from "./pages/InstructorHome";
+import CreateThread from "./pages/CreateThread";
 import InstructorQuestions from "./pages/InstructorQuestions";
+
+import Announcements from "./pages/Announcements";
+import Reports from "./pages/Reports";
+import AdminHome from "./pages/AdminHome"; // ✅ ADMIN PAGE
 
 function App() {
     return ( <
         BrowserRouter >
         <
-        Routes > { /* AUTH */ } <
+        Routes > { /* ================= AUTH ================= */ } <
         Route path = "/login"
         element = { < Login / > }
         /> <
@@ -22,7 +26,7 @@ function App() {
         element = { < Register / > }
         />
 
-        { /* STUDENT / GENERAL HOME */ } <
+        { /* ================= STUDENT ================= */ } <
         Route path = "/"
         element = { < Home / > }
         /> <
@@ -30,51 +34,51 @@ function App() {
         element = { < Home / > }
         />
 
-        { /* INSTRUCTOR HOME ✅ */ } <
-        Route path = "/instructor/home"
-        element = { < InstructorHome / > }
-        />
-
-        { /* THREADS & QUESTIONS */ } <
+        { /* ================= THREADS & QUESTIONS ================= */ } <
         Route path = "/threads/:courseId"
+        element = { < Threads / > }
+        /> <
+        Route path = "/threads"
         element = { < Threads / > }
         /> <
         Route path = "/questions/:threadId"
         element = { < Questions / > }
         /> <
-        Route path = "/threads"
-        element = { < Threads / > }
-        />
-
-        { /* CREATE THREAD */ } <
-        Route path = "/instructor/create-thread"
-        element = { < CreateThread / > }
-        />
-
-        { /* REPORTS */ } <
-        Route path = "/reports"
-        element = { < Reports / > }
-        />
-
-        { /* QUESTIONS */ } <
         Route path = "/questions"
         element = { < Questions / > }
         />
 
-        { /* ANNOUNCEMENTS */ } <
-        Route path = "/announcements"
-        element = { < Announcements / > }
-        />
-
-        { /* INSTRUCTOR QUESTIONS VIEW */ } <
+        { /* ================= INSTRUCTOR ================= */ } <
+        Route path = "/instructor/home"
+        element = { < InstructorHome / > }
+        /> <
+        Route path = "/instructor/create-thread"
+        element = { < CreateThread / > }
+        /> <
         Route path = "/questions/course/:courseId"
         element = { < InstructorQuestions / > }
         />
 
+        { /* ================= ANNOUNCEMENTS ================= */ } <
+        Route path = "/announcements"
+        element = { < Announcements / > }
+        />
 
+        { /* ================= REPORTS ================= */ } <
+        Route path = "/reports"
+        element = { < Reports / > }
+        />
 
+        { /* ================= ADMIN ================= */ } <
+        Route path = "/admin/dashboard"
+        element = { < AdminHome / > }
+        />
 
-        <
+        { /* ================= FALLBACK ================= */ } <
+        Route path = "*"
+        element = { < Navigate to = "/login"
+            replace / > }
+        /> <
         /Routes> <
         /BrowserRouter>
     );
