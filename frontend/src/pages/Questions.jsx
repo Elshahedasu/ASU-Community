@@ -1,31 +1,21 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getQuestionsByThread } from "../services/questionService";
-import { getRepliesByQuestion } from "../services/replyService";
 import API from "../services/api";
-import "../styles/app.css";
-import Reply from "../components/Reply";
+import Navbar from "../components/Navbar";
+import Replies from "../pages/Replies";
 
 const Questions = () => {
   const { threadId } = useParams();
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "null");
 
   const [questions, setQuestions] = useState([]);
   const [content, setContent] = useState("");
-  const [repliesMap, setRepliesMap] = useState({});
 
-  /* ======================
-     LOAD QUESTIONS + REPLIES
-     ====================== */
   const loadQuestions = async () => {
-    const qs = await getQuestionsByThread(threadId);
-    setQuestions(qs);
-
-    const map = {};
-    for (const q of qs) {
-      map[q._id] = await getRepliesByQuestion(q._id);
-    }
-    setRepliesMap(map);
+    const data = await getQuestionsByThread(threadId);
+    setQuestions(data);
   };
 
   useEffect(() => {
@@ -34,7 +24,7 @@ const Questions = () => {
 
   /* ======================
      STUDENT: ASK QUESTION
-     ====================== */
+  ====================== */
   const postQuestion = async (e) => {
     e.preventDefault();
 
@@ -60,105 +50,61 @@ const Questions = () => {
     loadQuestions();
   };
 
-  /* ======================
-     REPORT REPLY
-     ====================== */
-  const reportReply = async (replyId) => {
-    const reason = prompt("Enter report reason:");
-    if (!reason) return;
-
-    await API.post("/api/reports", {
-      reporterId: user._id,
-      targetId: replyId,
-      targetType: "reply",
-      reason,
-    });
-
-    alert("Reply reported");
-  };
-
-  /* ======================
-     TOGGLE BEST ANSWER
-     ====================== */
-  const toggleBest = async (replyId, questionId) => {
-    await API.patch("/api/replies/best", {
-      replyId,
-      questionId,
-    });
-    loadQuestions();
-  };
-
   return (
-    <div className="page-container">
-      <h2 className="section-title">Questions</h2>
+    <>
+      <Navbar />
 
-      {/* STUDENT: ASK QUESTION */}
-      {user?.role === "student" && (
-        <form className="form" onSubmit={postQuestion}>
-          <textarea
-            className="textarea"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Ask a question..."
-            required
-          />
-          <button className="btn btn-primary">Post</button>
-        </form>
-      )}
+      <div className="questions-page">
+        <div className="questions-card">
 
-      {/* QUESTIONS + REPLIES */}
-      <div className="list">
-        {questions.map((q) => (
-          <div key={q._id} className="list-item">
-            <strong>{q.content}</strong>
-            <p className="meta">Asked by: {q.authorId}</p>
+          {/* 🔙 CARD HEADER – SAME AS CreateThread & Announcements */}
+          <div className="card-header page-nav-style">
+            <button
+              className="page-nav-back"
+              onClick={() => navigate(-1)}
+            >
+              ← Back
+            </button>
 
-            {/* REPLIES */}
-            {repliesMap[q._id]?.map((r) => (
-              <div
-                key={r._id}
-                className={`reply ${r.isBest ? "best" : ""}`}
-              >
-                <p>{r.content}</p>
-                <span className="meta">By: {r.authorId}</span>
+            <h2 className="page-nav-title">Questions</h2>
+          </div>
 
-                {/* INSTRUCTOR: MARK / REMOVE BEST */}
-                {user?.role === "instructor" && (
-                  <button
-                    className="btn btn-warning btn-sm"
-                    onClick={() => toggleBest(r._id, q._id)}
-                  >
-                    {r.isBest ? "Remove Best" : "Mark Best"}
-                  </button>
-                )}
+          {/* ================= ASK QUESTION ================= */}
+          {user?.role === "student" && (
+            <form className="question-form-card" onSubmit={postQuestion}>
+              <textarea
+                className="form-textarea"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Ask a question..."
+                required
+              />
+              <div className="form-actions">
+                <button className="btn primary">Post Question</button>
+              </div>
+            </form>
+          )}
 
-                {/* STUDENT: REPORT */}
-                {user?.role === "student" && (
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => reportReply(r._id)}
-                  >
-                    Report
-                  </button>
-                )}
+          {/* ================= QUESTIONS + REPLIES ================= */}
+          <div className="question-card-list">
+            {questions.map((q) => (
+              <div key={q._id} className="question-card">
+                <div className="question-header">
+                  <p className="question-content">{q.content}</p>
+                  <p className="question-meta">
+                    Asked by: {q.authorId}
+                  </p>
+                </div>
 
-                {r.isBest && (
-                  <span className="best-badge">✔ Best Answer</span>
-                )}
+                {/* REPLIES */}
+                <Replies questionId={q._id} />
               </div>
             ))}
-
-            {/* REPLY BOX (STUDENT + INSTRUCTOR) */}
-            {user && (
-              <Reply
-                questionId={q._id}
-                onSuccess={loadQuestions}
-              />
-            )}
           </div>
-        ))}
+
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

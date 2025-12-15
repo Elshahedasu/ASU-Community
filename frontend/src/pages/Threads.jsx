@@ -1,48 +1,88 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 import { getThreadsByCourse } from "../services/threadService";
 import API from "../services/api";
-import "../styles/app.css";
+import PageNav from "../components/PageNav";
 
 const Threads = () => {
   const { courseId } = useParams();
-const user = JSON.parse(localStorage.getItem("user") || "null");
 
+  const rawUser = localStorage.getItem("user");
+  const user = rawUser ? JSON.parse(rawUser) : null;
+
+  /* =========================
+     STATE
+  ========================= */
   const [threads, setThreads] = useState([]);
 
+  /* =========================
+     FETCH THREADS
+  ========================= */
   useEffect(() => {
+    if (!courseId) return;
     getThreadsByCourse(courseId).then(setThreads);
   }, [courseId]);
 
-  const subscribe = async (id) => {
-    await API.post("/api/thread-subscriptions", {
-      userId: user._id,
-      threadId: id,
-    });
-    alert("Subscribed");
+  /* =========================
+     AUTH GUARD
+  ========================= */
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  /* =========================
+     SUBSCRIBE
+  ========================= */
+  const handleSubscribe = async (threadId) => {
+    try {
+      await API.post("/api/thread-subscriptions", {
+        userId: user._id,
+        threadId,
+      });
+      alert("Subscribed successfully");
+    } catch {
+      alert("Failed to subscribe");
+    }
   };
 
   return (
     <div className="page-container">
-      <h2 className="section-title">Course Threads</h2>
+      {/* 🔙 PAGE NAV */}
+      <PageNav title="Course Threads" />
 
-      <div className="list">
-        {threads.map(t => (
-          <div key={t._id} className="list-item">
-            <Link to={`/questions/${t._id}`} className="list-title">
-              {t.title}
-            </Link>
-            {t.pinned && <span className="pin">📌</span>}
+      {threads.length === 0 ? (
+        <p className="empty-text">No threads available.</p>
+      ) : (
+        <div className="thread-card-grid">
+          {threads.map(thread => (
+            <div key={thread._id} className="thread-card">
+              <div className="thread-card-header">
+                <Link
+                  to={`/questions/${thread._id}`}
+                  className="thread-card-title"
+                >
+                  {thread.title}
+                </Link>
 
-            <button
-              className="btn btn-primary"
-              onClick={() => subscribe(t._id)}
-            >
-              Subscribe
-            </button>
-          </div>
-        ))}
-      </div>
+                {thread.pinned && (
+                  <span className="thread-card-pin" title="Pinned">
+                    📌
+                  </span>
+                )}
+              </div>
+
+              <div className="thread-card-actions">
+                <button
+                  className="btn primary"
+                  onClick={() => handleSubscribe(thread._id)}
+                >
+                  Subscribe
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

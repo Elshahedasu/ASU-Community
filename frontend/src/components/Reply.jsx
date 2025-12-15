@@ -2,31 +2,43 @@ import { useState } from "react";
 import API from "../services/api";
 
 export default function Reply({ questionId, onSuccess }) {
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const rawUser = localStorage.getItem("user");
+  const user = rawUser ? JSON.parse(rawUser) : null;
+
   const [content, setContent] = useState("");
 
-  const sendReply = async () => {
-    if (!content.trim()) return;
+  const handleSendReply = async () => {
+    if (!content.trim() || !user) return;
 
-    await API.post("/api/replies", {
-      _id: `R-${Date.now()}`,
-      questionId,
-      authorId: user._id,
-      content,
-    });
+    try {
+      await API.post("/api/replies", {
+        _id: `R-${Date.now()}`,
+        questionId,
+        authorId: user._id,
+        content,
+      });
 
-    setContent("");
-    onSuccess(); // reload questions + replies
+      setContent("");
+      onSuccess();
+    } catch {
+      alert("Failed to send reply");
+    }
   };
 
   return (
-    <div className="reply-box">
+    <div className="reply-card">
       <textarea
+        className="reply-input"
         placeholder="Write a reply..."
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
-      <button onClick={sendReply}>Reply</button>
+
+      <div className="reply-actions">
+        <button className="btn primary" onClick={handleSendReply}>
+          Reply
+        </button>
+      </div>
     </div>
   );
 }

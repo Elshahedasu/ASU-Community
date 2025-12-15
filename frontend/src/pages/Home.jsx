@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import API from "../services/api";
-import "../styles/app.css";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -10,20 +9,20 @@ const Home = () => {
   const rawUser = localStorage.getItem("user");
   const user = rawUser ? JSON.parse(rawUser) : null;
 
-  // 🔐 HARD GUARD (prevents white screen)
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
+  /* =========================
+     STATE
+  ========================= */
   const [allCourses, setAllCourses] = useState([]);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
 
   /* =========================
-     FETCH COURSES + ENROLLMENTS
+     FETCH COURSES & ENROLLMENTS
   ========================= */
   useEffect(() => {
+    if (!user) return;
+
     const fetchData = async () => {
       try {
         const coursesRes = await API.get("/api/courses");
@@ -40,18 +39,25 @@ const Home = () => {
         setAllCourses(
           coursesRes.data.filter(c => !enrolledIds.includes(c._id))
         );
-      } catch (err) {
+      } catch (error) {
         console.error("Failed to load courses");
       }
     };
 
     fetchData();
-  }, [user._id]);
+  }, [user]);
+
+  /* =========================
+     AUTH GUARD (AFTER HOOKS)
+  ========================= */
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
   /* =========================
      DROP COURSE
   ========================= */
-  const dropCourse = async (courseId) => {
+  const handleDropCourse = async (courseId) => {
     if (!window.confirm("Are you sure you want to drop this course?")) return;
 
     try {
@@ -62,14 +68,10 @@ const Home = () => {
         courseId,
       });
 
-      setEnrolledCourses(prev =>
-        prev.filter(c => c._id !== courseId)
-      );
+      const dropped = enrolledCourses.find(c => c._id === courseId);
 
-      setAllCourses(prev => [
-        ...prev,
-        enrolledCourses.find(c => c._id === courseId),
-      ]);
+      setEnrolledCourses(prev => prev.filter(c => c._id !== courseId));
+      setAllCourses(prev => [...prev, dropped]);
     } catch {
       alert("Failed to drop course");
     } finally {
@@ -89,8 +91,8 @@ const Home = () => {
       <Navbar />
 
       <div className="home-page">
-        {/* ENROLLED COURSES */}
-        <div className="home-section">
+        {/* ================= ENROLLED COURSES ================= */}
+        <section className="home-section">
           <h2 className="section-title">My Enrolled Courses</h2>
 
           {enrolledCourses.length === 0 ? (
@@ -99,7 +101,7 @@ const Home = () => {
             <div className="course-grid">
               {enrolledCourses.map(course => (
                 <div key={course._id} className="course-card enrolled">
-                  <div>
+                  <div className="course-info">
                     <h3>{course.title}</h3>
                     <p>{course.description}</p>
                   </div>
@@ -114,7 +116,7 @@ const Home = () => {
 
                     <button
                       className="btn danger"
-                      onClick={() => dropCourse(course._id)}
+                      onClick={() => handleDropCourse(course._id)}
                       disabled={loading}
                     >
                       Drop
@@ -124,10 +126,10 @@ const Home = () => {
               ))}
             </div>
           )}
-        </div>
+        </section>
 
-        {/* EXPLORE COURSES */}
-        <div className="home-section">
+        {/* ================= EXPLORE COURSES ================= */}
+        <section className="home-section">
           <h2 className="section-title">Explore Courses</h2>
 
           <input
@@ -144,7 +146,7 @@ const Home = () => {
             <div className="course-grid">
               {filteredExplore.map(course => (
                 <div key={course._id} className="course-card explore">
-                  <div>
+                  <div className="course-info">
                     <h3>{course.title}</h3>
                     <p>{course.description}</p>
                   </div>
@@ -166,7 +168,7 @@ const Home = () => {
               ))}
             </div>
           )}
-        </div>
+        </section>
       </div>
     </>
   );

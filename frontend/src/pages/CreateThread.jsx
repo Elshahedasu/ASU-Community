@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 export default function CreateThread() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ✅ courseId passed from InstructorHome
   const courseID = location.state?.courseId;
 
   const [title, setTitle] = useState("");
@@ -18,7 +18,7 @@ export default function CreateThread() {
       return;
     }
 
-    if (!title) {
+    if (!title.trim()) {
       alert("Thread title is required");
       return;
     }
@@ -64,29 +64,66 @@ export default function CreateThread() {
   };
 
   return (
-    <div className="create-thread-container">
-      <h2>Create New Thread</h2>
+    <>
+      <Navbar />
 
-      {/* ✅ Course context (read-only, optional but clear) */}
-      <p><strong>Course ID:</strong> {courseID}</p>
+      <div className="create-thread-page">
+        <div className="create-thread-card">
 
-      <input
-        placeholder="Thread Title"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-      />
+          {/* 🔙 CARD HEADER – SAME STYLE AS PageNav */}
+          <div className="card-header page-nav-style">
+            <button
+              className="page-nav-back"
+              onClick={() => navigate("/instructor/home")}
+            >
+              ← Back
+            </button>
 
-      <textarea placeholder="Short description (optional)" />
+            <h2 className="page-nav-title">Create New Thread</h2>
+          </div>
 
-      <input
-        placeholder="Tags (e.g. MongoDB, Database Design)"
-        value={tags}
-        onChange={e => setTags(e.target.value)}
-      />
+          <p className="course-context">
+            <strong>Course ID:</strong> {courseID || "N/A"}
+          </p>
 
-      <button onClick={createThread} disabled={loading}>
-        {loading ? "Creating..." : "Create Thread"}
-      </button>
-    </div>
+          <input
+            className="form-input"
+            placeholder="Thread Title"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+          />
+
+          <textarea
+            className="form-textarea"
+            placeholder="Short description (optional)"
+          />
+
+          <input
+            className="form-input"
+            placeholder="Tags (e.g. MongoDB, Database Design)"
+            value={tags}
+            onChange={e => setTags(e.target.value)}
+          />
+
+          <div className="form-actions">
+            <button
+              className="btn primary"
+              onClick={createThread}
+              disabled={loading}
+            >
+              {loading ? "Creating..." : "Create Thread"}
+            </button>
+
+            <button
+              className="btn"
+              onClick={() => navigate("/instructor/home")}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

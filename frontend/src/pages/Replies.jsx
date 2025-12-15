@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { getRepliesByQuestion } from "../services/replyService";
 import API from "../services/api";
-import "../styles/app.css";
 
 const Replies = ({ questionId }) => {
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -9,6 +8,9 @@ const Replies = ({ questionId }) => {
   const [replies, setReplies] = useState([]);
   const [content, setContent] = useState("");
 
+  /* ======================
+     LOAD REPLIES
+  ====================== */
   const load = async () => {
     const data = await getRepliesByQuestion(questionId);
     setReplies(data);
@@ -20,7 +22,7 @@ const Replies = ({ questionId }) => {
 
   /* ======================
      POST REPLY
-     ====================== */
+  ====================== */
   const post = async (e) => {
     e.preventDefault();
     if (!user || !content.trim()) return;
@@ -37,8 +39,38 @@ const Replies = ({ questionId }) => {
   };
 
   /* ======================
-     VOTE (LIKE) REPLY
-     ====================== */
+     REPORT REPLY (STUDENT)
+  ====================== */
+  const report = async (replyId) => {
+    const reason = prompt("Enter report reason:");
+    if (!reason || !user) return;
+
+    await API.post("/api/reports", {
+      _id: `RP-${Date.now()}`,
+      reporterId: user._id,
+      targetId: replyId,
+      targetType: "reply",
+      reason,
+    });
+
+    alert("Reply reported");
+  };
+
+  /* ======================
+     MARK / UNMARK BEST
+     (INSTRUCTOR + ADMIN)
+  ====================== */
+  const toggleBest = async (replyId) => {
+    await API.patch("/api/replies/best", {
+      replyId,
+      questionId,
+    });
+    load();
+  };
+
+  /* ======================
+     VOTE (LIKE)
+  ====================== */
   const vote = async (replyId) => {
     if (!user) return;
 
@@ -47,60 +79,80 @@ const Replies = ({ questionId }) => {
         _id: `V-${Date.now()}`,
         userId: user._id,
         replyId,
-        voteType: "upvote", // MUST MATCH ENUM
+        voteType: "upvote",
       });
-
       load();
-    } catch (err) {
+    } catch {
       alert("You already voted");
     }
   };
 
   return (
-    <div style={{ marginLeft: "20px", marginTop: "10px" }}>
-      {/* REPLY BOX */}
+    <div className="replies-section">
+      {/* ================= REPLY BOX ================= */}
       {user && (
-        <form onSubmit={post}>
+        <form className="reply-form" onSubmit={post}>
           <textarea
+            className="form-textarea"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Write a reply..."
             required
           />
-          <button type="submit">Reply</button>
+          <div className="form-actions">
+            <button className="btn primary">Reply</button>
+          </div>
         </form>
       )}
 
-      {/* REPLIES */}
-      {replies.map((r) => (
-        <div
-          key={r._id}
-          style={{
-            border: r.isBest ? "2px solid green" : "1px solid #ccc",
-            padding: "10px",
-            marginTop: "10px",
-          }}
-        >
-          <p>{r.content}</p>
-          <small>By: {r.authorId}</small>
+      {/* ================= REPLIES ================= */}
+      <div className="reply-list">
+        {replies.map((r) => (
+          <div
+            key={r._id}
+            className={`reply-card ${r.isBest ? "best" : ""}`}
+          >
+            <p className="reply-content">{r.content}</p>
+            <p className="reply-meta">By: {r.authorId}</p>
 
-          <div style={{ marginTop: "5px" }}>
-            {/* 👍 LIKE / VOTE */}
-            {user && (
-              <button onClick={() => vote(r._id)}>
-                👍 Like ({r.upvotes || 0})
-              </button>
-            )}
+            <div className="reply-actions">
+              {/* 👍 LIKE */}
+              {user && (
+                <button
+                  className="btn small"
+                  onClick={() => vote(r._id)}
+                >
+                  👍 Like ({r.upvotes || 0})
+                </button>
+              )}
 
-            {/* BEST ANSWER */}
-            {r.isBest && (
-              <span style={{ marginLeft: "10px", color: "green" }}>
-                ✔ Best Answer
-              </span>
-            )}
+              {/* 🚩 REPORT (STUDENT ONLY) */}
+              {user?.role === "student" && (
+                <button
+                  className="btn danger small"
+                  onClick={() => report(r._id)}
+                >
+                  Report
+                </button>
+              )}
+
+              {/* ⭐ BEST ANSWER (INSTRUCTOR + ADMIN) */}
+              {(user?.role === "instructor" || user?.role === "admin") && (
+                <button
+                  className="btn warning small"
+                  onClick={() => toggleBest(r._id)}
+                >
+                  {r.isBest ? "Remove Best" : "Mark Best"}
+                </button>
+              )}
+
+              {r.isBest && (
+                <span className="best-badge">✔ Best Answer</span>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

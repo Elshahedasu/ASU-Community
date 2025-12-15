@@ -1,92 +1,285 @@
-/* =========================
-   PAGE LAYOUT
-========================= */
+/* =====================================================
+   GLOBAL VARIABLES
+   ===================================================== */
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --border: #e5e7eb;
+    --bg-light: #f9fafb;
+    --text-dark: #1f2937;
+    --text-muted: #6b7280;
+    --radius-pill: 999px;
+    --radius-lg: 24px;
+    --radius-md: 12px;
+}
+
+
+/* =====================================================
+   RESET
+   ===================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg-light);
+    color: var(--text-dark);
+}
+
+
+/* =====================================================
+   AUTH PAGES ONLY
+   ===================================================== */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+
+/* ---------- Card ---------- */
+
+.auth-container {
+    max-width: 1100px;
+    width: 100%;
+    display: flex;
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ---------- Form Side ---------- */
+
+.auth-form-container {
+    flex: 1;
+    padding: 64px 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 28px;
+}
+
+
+/* ---------- Inputs ---------- */
+
+.auth-form-container input {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    font-size: 15px;
+}
+
+.auth-form-container input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+
+/* ---------- Button ---------- */
+
+.auth-button {
+    margin-top: 8px;
+    padding: 12px;
+    border-radius: var(--radius-pill);
+    border: none;
+    background: var(--primary);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.auth-button:hover {
+    background: var(--primary-dark);
+}
+
+
+/* ---------- Footer ---------- */
+
+.auth-footer {
+    margin-top: 22px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.auth-link {
+    color: var(--primary);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+
+/* ---------- Error ---------- */
+
+.auth-error {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+
+/* ---------- Visual Side ---------- */
+
+.auth-visual {
+    flex: 1;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #ffffff;
+    padding: 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-visual h3 {
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.auth-visual p {
+    font-size: 16px;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+    .auth-container {
+        flex-direction: column;
+    }
+    .auth-visual {
+        display: none;
+    }
+    .auth-form-container {
+        padding: 48px 32px;
+    }
+}
+
+
+/* =====================================================
+   AUTH SELECT INPUT
+   ===================================================== */
+
+.auth-select {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    font-size: 15px;
+    background-color: #ffffff;
+    color: var(--text-dark);
+    cursor: pointer;
+}
+
+.auth-select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+
+/* =====================================================
+   HOME PAGE
+   ===================================================== */
 
 .home-page {
-    max-width: 1100px;
-    margin: auto;
-    padding: 30px 20px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px 60px;
 }
 
 .home-section {
-    margin-bottom: 50px;
+    margin-bottom: 48px;
 }
-
-
-/* =========================
-   TITLES
-========================= */
 
 .section-title {
-    font-size: 22px;
+    font-size: 24px;
+    font-weight: 600;
     margin-bottom: 20px;
-    border-bottom: 2px solid #e5e7eb;
-    padding-bottom: 6px;
+    color: var(--text-dark);
 }
 
 
-/* =========================
-   SEARCH
-========================= */
+/* ---------- Search ---------- */
 
 .search-input {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 25px;
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
+    max-width: 360px;
+    padding: 10px 14px;
+    margin-bottom: 24px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
     font-size: 14px;
 }
 
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
 
-/* =========================
-   GRID
-========================= */
+
+/* ---------- Course Grid ---------- */
 
 .course-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
 }
 
-
-/* =========================
-   COURSE CARD
-========================= */
-
 .course-card {
-    background: white;
-    padding: 18px;
-    border-radius: 8px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
 }
 
 .course-card h3 {
-    font-size: 17px;
-    margin-bottom: 6px;
+    font-size: 18px;
+    margin-bottom: 8px;
 }
 
 .course-card p {
     font-size: 14px;
-    color: #555;
-    margin-bottom: 15px;
+    color: var(--text-muted);
+    line-height: 1.4;
 }
 
-.course-card.enrolled {
-    border-left: 5px solid #22c55e;
-}
-
-.course-card.explore {
-    border-left: 5px solid #3b82f6;
+.course-info {
+    margin-bottom: 16px;
 }
 
 
-/* =========================
-   ACTIONS
-========================= */
+/* ---------- Actions ---------- */
 
 .card-actions {
     display: flex;
@@ -94,43 +287,42 @@
 }
 
 
-/* =========================
-   BUTTONS
-========================= */
+/* ---------- Buttons ---------- */
 
 .btn {
     padding: 8px 14px;
-    border-radius: 6px;
+    border-radius: var(--radius-pill);
     border: none;
+    font-size: 13.5px;
+    font-weight: 500;
     cursor: pointer;
-    font-size: 14px;
 }
 
 .btn.primary {
-    background: #2563eb;
-    color: white;
+    background: var(--primary);
+    color: #ffffff;
 }
 
 .btn.primary:hover {
-    background: #1d4ed8;
+    background: var(--primary-dark);
 }
 
 .btn.success {
-    background: #22c55e;
-    color: white;
+    background: #16a34a;
+    color: #ffffff;
 }
 
 .btn.success:hover {
-    background: #16a34a;
+    background: #15803d;
 }
 
 .btn.danger {
-    background: #ef4444;
-    color: white;
+    background: #dc2626;
+    color: #ffffff;
 }
 
 .btn.danger:hover {
-    background: #dc2626;
+    background: #b91c1c;
 }
 
 .btn:disabled {
@@ -139,84 +331,42 @@
 }
 
 
-/* =========================
-   EMPTY TEXT
-========================= */
+/* ---------- Empty ---------- */
 
 .empty-text {
-    color: #6b7280;
     font-size: 14px;
+    color: var(--text-muted);
 }
 
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* =====================================================
+   NAVBAR
+   ===================================================== */
 
-@media (max-width: 600px) {
-    .home-page {
-        padding: 20px 15px;
-    }
+.navbar {
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
-
-/* =========================
-   HOME PAGE UI
-========================= */
-
-.home-page {
-    max-width: 1100px;
-    margin: auto;
-    padding: 30px 20px;
-}
-
-.home-section {
-    margin-bottom: 50px;
-}
-
-.course-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
-}
-
-.course-card {
-    background: white;
-    padding: 18px;
-    border-radius: 8px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+.navbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 24px;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: space-between;
 }
 
-.course-card.enrolled {
-    border-left: 5px solid #22c55e;
-}
-
-.course-card.explore {
-    border-left: 5px solid #3b82f6;
-}
-
-.card-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: auto;
-}
-
-.search-input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 25px;
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
-    font-size: 14px;
+.logo {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-dark);
 }
 
 
-/* =========================
-   NAVBAR LINKS FIX
-========================= */
+/* ---------- Links ---------- */
 
 .nav-links {
     display: flex;
@@ -224,65 +374,932 @@
     gap: 18px;
 }
 
+.nav-link {
+    font-size: 14.5px;
+    color: var(--text-dark);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+}
+
 .nav-link.disabled {
-    color: #94a3b8;
+    color: var(--text-muted);
     cursor: not-allowed;
 }
 
 .nav-link.disabled:hover {
-    text-decoration: none;
+    color: var(--text-muted);
 }
 
 
-/* ===== Threads / Questions / Replies ===== */
+/* ---------- Logout ---------- */
 
-.list {
+.logout-btn {
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    background: transparent;
+    font-size: 13.5px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background: #f3f4f6;
+}
+
+
+/* =====================================================
+   THREADS PAGE
+   ===================================================== */
+
+.page-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 24px 60px;
+}
+
+
+/* ---------- Thread List ---------- */
+
+.thread-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.thread-item {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+}
+
+.thread-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.thread-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-dark);
+    text-decoration: none;
+}
+
+.thread-title:hover {
+    color: var(--primary);
+}
+
+.thread-pin {
+    font-size: 16px;
+}
+
+
+/* =====================================================
+   THREADS – CARD LAYOUT
+   ===================================================== */
+
+.thread-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.thread-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.thread-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ---------- Header ---------- */
+
+.thread-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.thread-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-decoration: none;
+    line-height: 1.3;
+}
+
+.thread-card-title:hover {
+    color: var(--primary);
+}
+
+.thread-card-pin {
+    font-size: 16px;
+}
+
+
+/* ---------- Actions ---------- */
+
+.thread-card-actions {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+/* =====================================================
+   QUESTIONS PAGE – CARD DESIGN
+   ===================================================== */
+
+.question-form {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.question-textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+    margin-bottom: 12px;
+    resize: vertical;
+}
+
+.question-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+
+/* ---------- Question Card ---------- */
+
+.question-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.question-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.question-header {
+    margin-bottom: 16px;
+}
+
+.question-content {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.question-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+
+/* =====================================================
+   REPLIES
+   ===================================================== */
+
+.replies-section {
+    margin-top: 16px;
+    padding-left: 16px;
+    border-left: 3px solid var(--border);
+}
+
+
+/* ---------- Reply Form ---------- */
+
+.reply-form {
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+}
+
+
+/* ---------- Reply List ---------- */
+
+.reply-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.reply-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+}
+
+.reply-card.best {
+    border-color: #16a34a;
+    background: #f0fdf4;
+}
+
+
+/* ---------- Content ---------- */
+
+.reply-content {
+    font-size: 14.5px;
+    margin-bottom: 6px;
+}
+
+.reply-meta {
+    font-size: 12.5px;
+    color: var(--text-muted);
+}
+
+
+/* ---------- Actions ---------- */
+
+.reply-actions {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn.small {
+    padding: 4px 10px;
+    font-size: 12.5px;
+}
+
+.best-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: #16a34a;
+}
+
+
+/* ---------- Buttons ---------- */
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12.5px;
+}
+
+.btn.warning {
+    background: #f59e0b;
+    color: #ffffff;
+}
+
+.btn.warning:hover {
+    background: #d97706;
+}
+
+
+/* =====================================================
+   REPLY COMPONENT
+   ===================================================== */
+
+.reply-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-top: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+
+/* ---------- Input ---------- */
+
+.reply-input {
+    width: 100%;
+    min-height: 90px;
+    resize: vertical;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    font-size: 14.5px;
+    font-family: inherit;
+}
+
+.reply-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+
+/* ---------- Actions ---------- */
+
+.reply-actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+/* =====================================================
+   PAGE NAVIGATION (BACK / TITLE)
+   ===================================================== */
+
+.page-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.page-nav-back {
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    background: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.page-nav-back:hover {
+    background: #f3f4f6;
+}
+
+.page-nav-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+
+/* ---------- Replies ---------- */
+
+.reply-list {
+    margin-top: 12px;
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.list-item {
-    background: #fff;
-    padding: 14px;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
+.reply-card.best {
+    border: 1px solid #16a34a;
+    background: #f0fdf4;
 }
 
-.list-title {
-    font-weight: 600;
-    text-decoration: none;
-    color: #2563eb;
+.reply-content {
+    font-size: 14.5px;
+    margin-bottom: 6px;
 }
 
-.list-title:hover {
-    text-decoration: underline;
-}
-
-.meta {
-    font-size: 12px;
-    color: #6b7280;
-}
-
-.form {
-    margin-bottom: 20px;
-}
-
-.textarea {
-    width: 100%;
-    min-height: 90px;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
-    margin-bottom: 10px;
-}
-
-.best {
-    border: 2px solid #22c55e;
+.reply-meta {
+    font-size: 12.5px;
+    color: var(--text-muted);
 }
 
 .best-badge {
-    color: #16a34a;
+    font-size: 12px;
     font-weight: 600;
-    margin-left: 10px;
+    color: #16a34a;
+}
+
+
+/* ---------- Small Buttons ---------- */
+
+.btn-sm {
+    padding: 4px 10px;
+    font-size: 12.5px;
+}
+
+.btn.warning {
+    background: #f59e0b;
+    color: #ffffff;
+}
+
+.btn.warning:hover {
+    background: #d97706;
+}
+
+
+/* =====================================================
+   INSTRUCTOR DASHBOARD
+   ===================================================== */
+
+.instructor-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+}
+
+.instructor-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 28px;
+}
+
+
+/* ---------- Courses Grid ---------- */
+
+.instructor-course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.instructor-course-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.course-info h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.course-code {
+    font-size: 13.5px;
+    color: var(--text-muted);
+}
+
+
+/* ---------- Actions ---------- */
+
+.course-actions {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.course-actions .btn {
+    flex: 1 1 48%;
+    font-size: 13.5px;
+}
+
+
+/* ---------- Moderation ---------- */
+
+.instructor-moderation {
+    margin-top: 56px;
+    max-width: 420px;
+}
+
+.instructor-moderation-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.instructor-moderation-card h3 {
+    margin-bottom: 8px;
+}
+
+
+/* ---------- Moderation Section ---------- */
+
+.instructor-moderation {
+    margin-top: 48px;
+    max-width: 420px;
+}
+
+
+/* ---------- Empty State ---------- */
+
+.instructor-empty {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+
+/* ---------- Empty State ---------- */
+
+.instructor-empty {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+
+/* =====================================================
+   REPORTS PAGE
+   ===================================================== */
+
+.report-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.report-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.report-info p {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+
+/* ---------- Status ---------- */
+
+.report-status {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.report-status.pending {
+    color: #f59e0b;
+}
+
+.report-status.resolved {
+    color: #16a34a;
+}
+
+
+/* =====================================================
+   ADMIN DASHBOARD
+   ===================================================== */
+
+.admin-section {
+    margin-bottom: 48px;
+}
+
+.admin-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.admin-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.status {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status.active {
+    color: #16a34a;
+}
+
+.status.inactive {
+    color: #dc2626;
+}
+
+
+/* ---------- Logs ---------- */
+
+.admin-log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-log {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13.5px;
+}
+
+.log-detail {
+    color: var(--text-muted);
+}
+
+.log-time {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+
+/* =====================================================
+   CREATE THREAD
+   ===================================================== */
+
+.create-thread-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+}
+
+.create-thread-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px 26px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+
+/* ---------- Context ---------- */
+
+.course-context {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+
+/* ---------- Inputs ---------- */
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14.5px;
+    margin-bottom: 14px;
+}
+
+.form-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+
+/* ---------- Actions ---------- */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+
+/* =====================================================
+   ANNOUNCEMENTS
+   ===================================================== */
+
+.announcement-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+}
+
+.announcement-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px 26px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =====================================================
+   QUESTIONS PAGE
+   ===================================================== */
+
+.questions-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+}
+
+
+/* ---------- Ask Question Card ---------- */
+
+.question-form-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    margin-bottom: 28px;
+}
+
+
+/* ---------- Questions List ---------- */
+
+.question-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.question-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.question-header {
+    margin-bottom: 12px;
+}
+
+.question-content {
+    font-size: 15.5px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.question-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+
+/* =====================================================
+   INSTRUCTOR QUESTIONS
+   ===================================================== */
+
+.instructor-questions-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+}
+
+
+/* ---------- Grid ---------- */
+
+.instructor-question-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+
+/* ---------- Card ---------- */
+
+.instructor-question-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+/* ---------- Content ---------- */
+
+.question-text {
+    font-size: 15.5px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.question-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+
+/* ---------- Actions ---------- */
+
+.question-actions {
+    margin-top: 14px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+/* =====================================================
+   PAGE HEADER (BORDER-ONLY)
+   ===================================================== */
+
+.page-header {
+    max-width: 900px;
+    margin: 0 auto 18px;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.header-back {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+.header-back:hover {
+    text-decoration: underline;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   CARD HEADER (INSIDE BOX)
+   ===================================================== */
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.card-back {
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: var(--primary);
+    cursor: pointer;
+    padding: 0;
+}
+
+.card-back:hover {
+    text-decoration: underline;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   CARD HEADER USING PAGENAV STYLE
+   ===================================================== */
+
+.page-nav-style {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+
+/* =====================================================
+   QUESTIONS PAGE WRAPPER CARD
+   ===================================================== */
+
+.questions-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =====================================================
+   INSTRUCTOR QUESTIONS PAGE CARD
+   ===================================================== */
+
+.instructor-questions-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
 }

@@ -11,47 +11,73 @@ import Announcements from "./pages/Announcements";
 import InstructorQuestions from "./pages/InstructorQuestions";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        {/* AUTH */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    return ( <
+        BrowserRouter >
+        <
+        Routes > { /* AUTH */ } <
+        Route path = "/login"
+        element = { < Login / > }
+        /> <
+        Route path = "/register"
+        element = { < Register / > }
+        />
 
-        {/* STUDENT / GENERAL HOME */}
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
+        { /* STUDENT / GENERAL HOME */ } <
+        Route path = "/"
+        element = { < Home / > }
+        /> <
+        Route path = "/home"
+        element = { < Home / > }
+        />
 
-        {/* INSTRUCTOR HOME ✅ */}
-        <Route path="/instructor/home" element={<InstructorHome />} />
+        { /* INSTRUCTOR HOME ✅ */ } <
+        Route path = "/instructor/home"
+        element = { < InstructorHome / > }
+        />
 
-        {/* THREADS & QUESTIONS */}
-        <Route path="/threads/:courseId" element={<Threads />} />
-        <Route path="/questions/:threadId" element={<Questions />} />
-        <Route path="/threads" element={<Threads />} />
- 
-        {/* CREATE THREAD */}
-        <Route path="/instructor/create-thread" element={<CreateThread />} />
-        
-        {/* REPORTS */}
-        <Route path="/reports" element={<Reports />} />
+        { /* THREADS & QUESTIONS */ } <
+        Route path = "/threads/:courseId"
+        element = { < Threads / > }
+        /> <
+        Route path = "/questions/:threadId"
+        element = { < Questions / > }
+        /> <
+        Route path = "/threads"
+        element = { < Threads / > }
+        />
 
-        {/* QUESTIONS */}
-        <Route path="/questions" element={<Questions />} />
-        
-        {/* ANNOUNCEMENTS */}
-        <Route path="/announcements" element={<Announcements />} />
-        
-          {/* INSTRUCTOR QUESTIONS VIEW */}
-<        Route path="/questions/course/:courseId" element={<InstructorQuestions />}
-/>
+        { /* CREATE THREAD */ } <
+        Route path = "/instructor/create-thread"
+        element = { < CreateThread / > }
+        />
+
+        { /* REPORTS */ } <
+        Route path = "/reports"
+        element = { < Reports / > }
+        />
+
+        { /* QUESTIONS */ } <
+        Route path = "/questions"
+        element = { < Questions / > }
+        />
+
+        { /* ANNOUNCEMENTS */ } <
+        Route path = "/announcements"
+        element = { < Announcements / > }
+        />
+
+        { /* INSTRUCTOR QUESTIONS VIEW */ } <
+        Route path = "/questions/course/:courseId"
+        element = { < InstructorQuestions / > }
+        />
 
 
-  
-        
-      </Routes>
-    </BrowserRouter>
-  );
+
+
+        <
+        /Routes> <
+        /BrowserRouter>
+    );
 }
 
 export default App;

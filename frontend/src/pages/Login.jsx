@@ -6,14 +6,14 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const login = async () => {
+  const handleLogin = async () => {
     if (!email || !password) {
-      alert("Fill all fields");
+      alert("Please fill in all fields");
       return;
     }
 
     try {
-      const res = await fetch("http://localhost:5200/api/auth/login", {
+      const response = await fetch("http://localhost:5200/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -21,19 +21,16 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
-      if (!res.ok) {
+      if (!response.ok) {
         alert("Invalid email or password");
         return;
       }
 
-      const data = await res.json();
+      const data = await response.json();
 
-      // ✅ SAVE TOKEN & USER
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("user", JSON.stringify(data.user));
 
-      // ✅ ROLE-BASED REDIRECT
       if (data.user.role === "student") {
         navigate("/home");
       } else if (data.user.role === "instructor") {
@@ -43,37 +40,53 @@ export default function Login() {
       } else {
         navigate("/login");
       }
-    } catch (err) {
-      alert("Server error");
+    } catch (error) {
+      alert("Server error. Please try again later.");
     }
   };
 
   return (
-    <div className="container">
-      <h2>Login</h2>
+    <div className="auth-page">
+      <div className="auth-container">
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
+        <div className="auth-form-container">
+          <h2 className="auth-title">Login</h2>
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-      <button onClick={login}>Login</button>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-      <p>
-        No account?{" "}
-        <span className="link" onClick={() => navigate("/register")}>
-          Register
-        </span>
-      </p>
+          <button className="auth-button" onClick={handleLogin}>
+            Login
+          </button>
+
+          <p className="auth-footer">
+            No account?{" "}
+            <span className="auth-link" onClick={() => navigate("/register")}>
+              Register
+            </span>
+          </p>
+        </div>
+
+        <div className="auth-visual">
+          <h3>Education Community</h3>
+          <p>
+            A collaborative learning platform where students and instructors
+            connect, discuss topics, and share knowledge by course.
+          </p>
+        </div>
+
+      </div>
     </div>
   );
 }

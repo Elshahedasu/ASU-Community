@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 export default function Announcements() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function Announcements() {
   const [loading, setLoading] = useState(false);
 
   const postAnnouncement = async () => {
-    if (!courseId || !message) {
+    if (!courseId || !message.trim()) {
       alert("Missing data");
       return;
     }
@@ -30,7 +31,7 @@ export default function Announcements() {
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.message);
+        throw new Error(err.message || "Failed to post announcement");
       }
 
       alert("Announcement sent");
@@ -43,18 +44,54 @@ export default function Announcements() {
   };
 
   return (
-    <div className="container">
-      <h2>Post Announcement</h2>
+    <>
+      <Navbar />
 
-      <textarea
-        placeholder="Write announcement..."
-        value={message}
-        onChange={e => setMessage(e.target.value)}
-      />
+      <div className="announcement-page">
+        <div className="announcement-card">
 
-      <button onClick={postAnnouncement} disabled={loading}>
-        {loading ? "Posting..." : "Post Announcement"}
-      </button>
-    </div>
+          {/* 🔙 CARD HEADER – SAME AS PageNav / CreateThread */}
+          <div className="card-header page-nav-style">
+            <button
+              className="page-nav-back"
+              onClick={() => navigate("/instructor/home")}
+            >
+              ← Back
+            </button>
+
+            <h2 className="page-nav-title">Post Announcement</h2>
+          </div>
+
+          <p className="course-context">
+            <strong>Course ID:</strong> {courseId || "N/A"}
+          </p>
+
+          <textarea
+            className="form-textarea"
+            placeholder="Write announcement..."
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+          />
+
+          <div className="form-actions">
+            <button
+              className="btn primary"
+              onClick={postAnnouncement}
+              disabled={loading}
+            >
+              {loading ? "Posting..." : "Post Announcement"}
+            </button>
+
+            <button
+              className="btn"
+              onClick={() => navigate("/instructor/home")}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

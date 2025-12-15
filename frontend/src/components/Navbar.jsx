@@ -1,11 +1,10 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/app.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
 
-  const logout = () => {
+  const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
@@ -13,32 +12,30 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <h2 className="logo">DB Forum</h2>
+      <div className="navbar-inner">
+        <h2 className="logo">DB ASU Community</h2>
 
-      <div className="nav-links">
-        {/* Home */}
-        <Link to="/home" className="nav-link">
-          Home
-        </Link>
+        <div className="nav-links">
+          <Link to="/home" className="nav-link">
+            Home
+          </Link>
 
-        {/* Disabled Threads (must select course first) */}
-        <span
-          className="nav-link disabled"
-          onClick={() => navigate("/home")}
-          title="Select a course first"
-        >
-          Threads
-        </span>
+          <span
+            className="nav-link disabled"
+            onClick={() => navigate("/home")}
+            title="Select a course first"
+          >
 
-        {/* Profile */}
-        <Link to="/profile" className="nav-link">
-          Profile
-        </Link>
+          </span>
 
-        {/* Logout */}
-        <button className="logout-btn" onClick={logout}>
-          Logout
-        </button>
+          <Link to="/profile" className="nav-link">
+            Profile
+          </Link>
+
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </div>
     </nav>
   );
