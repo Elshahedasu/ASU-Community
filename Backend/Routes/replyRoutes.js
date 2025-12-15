@@ -1,8 +1,8 @@
 import express from "express";
 import {
-    getRepliesByQuestion,
-    createReply
-} from "../Controllers/ReplyController.js";
+  getRepliesByQuestion,
+  createReply
+} from "../Controllers/ReplyController.js"; // ✅ FIXED CASE
 
 const router = express.Router();
 
@@ -13,7 +13,7 @@ const router = express.Router();
 router.get("/question/:questionId", getRepliesByQuestion);
 
 /**
- * Create reply (student)
+ * Create reply (student / instructor)
  * POST /api/replies
  */
 router.post("/", createReply);

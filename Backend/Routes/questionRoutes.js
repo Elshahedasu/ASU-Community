@@ -1,4 +1,7 @@
 import express from "express";
+import { getQuestionsByCourse } from "../Controllers/questionController.js";
+
+
 import {
     getQuestionsByThread,
     createQuestion
@@ -11,6 +14,7 @@ const router = express.Router();
  * GET /api/questions/thread/:threadId
  */
 router.get("/thread/:threadId", getQuestionsByThread);
+router.get("/course/:courseId", getQuestionsByCourse);
 
 /**
  * Create question (student)

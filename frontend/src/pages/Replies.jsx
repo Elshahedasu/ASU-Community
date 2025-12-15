@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { getRepliesByQuestion } from "../services/replyService";
 import API from "../services/api";
 import "../styles/app.css";
 
-const Replies = () => {
-  const { questionId } = useParams();
- const user = JSON.parse(localStorage.getItem("user") || "null");
-
+const Replies = ({ questionId }) => {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   const [replies, setReplies] = useState([]);
   const [content, setContent] = useState("");
@@ -21,56 +18,54 @@ const Replies = () => {
     load();
   }, [questionId]);
 
+  // INSTRUCTOR ONLY: post reply
   const post = async (e) => {
     e.preventDefault();
+
+    if (!user || user.role !== "instructor") {
+      return;
+    }
+
     await API.post("/api/replies", {
       _id: `R-${Date.now()}`,
       questionId,
       authorId: user._id,
       content,
     });
+
     setContent("");
     load();
   };
 
-  const upvote = async (id) => {
-    await API.post("/api/votes/reply", {
-      userId: user._id,
-      replyId: id,
-      voteType: "up",
-    });
-    load();
-  };
-
   return (
-    <div className="page-container">
-      <h2 className="section-title">Replies</h2>
+    <div style={{ marginLeft: "20px", marginTop: "10px" }}>
+      {/* ✅ INSTRUCTOR ONLY: REPLY BOX */}
+      {user?.role === "instructor" && (
+        <form className="form" onSubmit={post}>
+          <textarea
+            className="textarea"
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            placeholder="Write your answer..."
+            required
+          />
+          <button className="btn btn-primary">Post Answer</button>
+        </form>
+      )}
 
-      <form className="form" onSubmit={post}>
-        <textarea
-          className="textarea"
-          value={content}
-          onChange={e => setContent(e.target.value)}
-          placeholder="Write a reply..."
-          required
-        />
-        <button className="btn btn-primary">Reply</button>
-      </form>
-
-      <div className="list">
-        {replies.map(r => (
+      {/* ✅ EVERYONE: SEE REPLIES */}
+      {replies.length === 0 ? (
+        <p style={{ color: "gray" }}>No answers yet</p>
+      ) : (
+        replies.map(r => (
           <div key={r._id} className={`list-item ${r.isBest ? "best" : ""}`}>
             <p>{r.content}</p>
-            <p className="meta">Author: {r.authorId}</p>
-
-            <button className="btn btn-success" onClick={() => upvote(r._id)}>
-              👍 {r.upvotes}
-            </button>
+            <p className="meta">Answered by: {r.authorId}</p>
 
             {r.isBest && <span className="best-badge">Best Answer</span>}
           </div>
-        ))}
-      </div>
+        ))
+      )}
     </div>
   );
 };

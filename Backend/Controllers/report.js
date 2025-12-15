@@ -2,34 +2,51 @@ import Report from "../Models/Report.js";
 import ActivityLog from "../Models/ActivityLog.js";
 
 /* ======================================================
-   1) Create Report
-   Scenario:
-   - User reports inappropriate content
+   CREATE REPORT
 ====================================================== */
 export const createReport = async (req, res) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized" });
+    const { reporterId, targetId, targetType, reason } = req.body;
+
+    if (!reporterId || !targetId || !targetType || !reason) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const { targetID, targetType, reason } = req.body;
-
     const report = await Report.create({
-      reporterID: req.user.id,
-      targetID,
+      _id: `RP-${Date.now()}`,
+      reporterId,
+      targetId,
       targetType,
-      reason
+      reason,
+      status: "pending",
     });
 
     await ActivityLog.create({
-      userID: req.user.id,
+      _id: `AL-${Date.now()}`,
+      userID: reporterId,
       actionType: "CREATE_REPORT",
       targetID: report._id,
-      detail: "User reported content"
+      detail: "User reported content",
     });
 
     res.status(201).json(report);
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+};
+
+/* ======================================================
+   GET REPORTED REPLIES (INSTRUCTOR)
+====================================================== */
+export const getReportedReplies = async (req, res) => {
+  try {
+    const reports = await Report.find({
+      targetType: "reply",
+      status: "pending",
+    });
+
+    res.status(200).json(reports);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

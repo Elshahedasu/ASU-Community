@@ -1,17 +1,25 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function CreateThread() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // ✅ courseId passed from InstructorHome
+  const courseID = location.state?.courseId;
 
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState("");
-  const [courseID, setCourseID] = useState("");
   const [loading, setLoading] = useState(false);
 
   const createThread = async () => {
-    if (!title || !courseID) {
-      alert("Title and course are required");
+    if (!courseID) {
+      alert("Course context missing. Go back and select a course.");
+      return;
+    }
+
+    if (!title) {
+      alert("Thread title is required");
       return;
     }
 
@@ -24,10 +32,10 @@ export default function CreateThread() {
     setLoading(true);
 
     const body = {
-      _id: `T-${Date.now()}`,      // required by schema
-      courseId: courseID,          // required by schema
-      title,                       // required by schema
-      creatorId: user._id,         // ✅ FIXED (from user object)
+      _id: `T-${Date.now()}`,
+      courseId: courseID,
+      title,
+      creatorId: user._id,
       tags: tags ? tags.split(",").map(t => t.trim()) : [],
     };
 
@@ -47,8 +55,6 @@ export default function CreateThread() {
       }
 
       const thread = await res.json();
-
-      // redirect to threads of the selected course
       navigate(`/threads/${thread.courseId}`);
     } catch (err) {
       alert(err.message);
@@ -61,11 +67,8 @@ export default function CreateThread() {
     <div className="create-thread-container">
       <h2>Create New Thread</h2>
 
-      <input
-        placeholder="Course ID"
-        value={courseID}
-        onChange={e => setCourseID(e.target.value)}
-      />
+      {/* ✅ Course context (read-only, optional but clear) */}
+      <p><strong>Course ID:</strong> {courseID}</p>
 
       <input
         placeholder="Thread Title"

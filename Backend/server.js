@@ -12,6 +12,9 @@ import authRoutes from "./Routes/authRoutes.js";
 import voteRoutes from "./Routes/voteRoutes.js";
 import enrollmentRoutes from "./Routes/enrollmentRoutes.js";
 import threadSubscriptionRoutes from "./Routes/threadSubscriptionRoutes.js";
+import announcementRoutes from "./Routes/announcementRoutes.js";
+import reportRoutes from "./Routes/reportRoutes.js";
+
 
 const app = express();
 
@@ -35,6 +38,8 @@ app.use("/api/replies", replyRoutes);
 app.use("/api/votes", voteRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/thread-subscriptions", threadSubscriptionRoutes);
+app.use("/api/announcements", announcementRoutes);
+app.use("/api/reports", reportRoutes);
 
 // START SERVER
 try {

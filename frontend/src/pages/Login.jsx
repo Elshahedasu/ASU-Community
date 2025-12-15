@@ -31,6 +31,7 @@ export default function Login() {
       // ✅ SAVE TOKEN & USER
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       // ✅ ROLE-BASED REDIRECT
       if (data.user.role === "student") {

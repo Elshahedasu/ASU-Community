@@ -1,34 +1,32 @@
 import { useState } from "react";
 import API from "../services/api";
 
-export default function Reply({ questionId }) {
-  const [reply, setReply] = useState("");
+export default function Reply({ questionId, onSuccess }) {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const [content, setContent] = useState("");
 
   const sendReply = async () => {
-    await API.post("/replies", {
-      questionId,
-      authorId: "U102",
-      content: reply
-    });
-    setReply("");
-  };
+    if (!content.trim()) return;
 
-  const upvote = async () => {
-    await API.post("/votes", {
-      replyId: questionId,
-      userId: "U101"
+    await API.post("/api/replies", {
+      _id: `R-${Date.now()}`,
+      questionId,
+      authorId: user._id,
+      content,
     });
+
+    setContent("");
+    onSuccess(); // reload questions + replies
   };
 
   return (
-    <div>
-      <input
-        placeholder="Reply"
-        value={reply}
-        onChange={e => setReply(e.target.value)}
+    <div className="reply-box">
+      <textarea
+        placeholder="Write a reply..."
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
       />
       <button onClick={sendReply}>Reply</button>
-      <button onClick={upvote}>Upvote</button>
     </div>
   );
 }

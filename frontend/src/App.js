@@ -7,8 +7,8 @@ import Register from "./pages/Register";
 import InstructorHome from "./pages/InstructorHome"; // ✅ ADD THIS
 import CreateThread from "./pages/CreateThread"; // NEW IMPORT  
 import Reports from "./pages/Reports";
-
-
+import Announcements from "./pages/Announcements";
+import InstructorQuestions from "./pages/InstructorQuestions";
 
 function App() {
   return (
@@ -28,7 +28,8 @@ function App() {
         {/* THREADS & QUESTIONS */}
         <Route path="/threads/:courseId" element={<Threads />} />
         <Route path="/questions/:threadId" element={<Questions />} />
-
+        <Route path="/threads" element={<Threads />} />
+ 
         {/* CREATE THREAD */}
         <Route path="/instructor/create-thread" element={<CreateThread />} />
         
@@ -37,7 +38,16 @@ function App() {
 
         {/* QUESTIONS */}
         <Route path="/questions" element={<Questions />} />
+        
+        {/* ANNOUNCEMENTS */}
+        <Route path="/announcements" element={<Announcements />} />
+        
+          {/* INSTRUCTOR QUESTIONS VIEW */}
+<        Route path="/questions/course/:courseId" element={<InstructorQuestions />}
+/>
 
+
+  
         
       </Routes>
     </BrowserRouter>
