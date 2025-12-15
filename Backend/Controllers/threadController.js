@@ -1,154 +1,126 @@
-import Thread from "../models/Thread.js";
-import CourseEnrollment from "../Models/CourseEnrollment.js";
-import Notification from "../Models/Notification.js";
+import Thread from "../Models/Thread.js";
 import ActivityLog from "../Models/ActivityLog.js";
-import User from "../Models/User.js";
 
 /* ======================================================
-   1) Create Thread (Instructor only)
-   Scenario:
-   - Instructor creates thread under course
-   - Enrolled users get notified
+   CREATE THREAD
 ====================================================== */
-export const createThread = async (req, res) => {
-  try {
-    const { courseID, title, tags, creatorID } = req.body;
-    // Create thread
+export const createThread = async(req, res) => {
+    try {
+        const { _id, courseId, title, tags, creatorId } = req.body;
 
-    const thread = await Thread.create({
-      courseID,
-      title,
-      creatorID,
-      tags,
-      lastActivityAt: new Date()
-    });
-   
+        if (!_id || !courseId || !title || !creatorId) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
 
-    // Log activity
-    await ActivityLog.create({
-      userID: creatorID,
-      actionType: "CREATE_THREAD",
-      targetID: thread._id,
-      detail: "Instructor created a thread"
-    });
+        const thread = await Thread.create({
+            _id,
+            courseId,
+            title,
+            creatorId,
+            tags: tags || [],
+            pinned: false,
+            lastActivityAt: new Date(),
+            status: "active",
+        });
 
-    res.status(201).json(thread);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-};
+        await ActivityLog.create({
+            _id: `AL-${Date.now()}`,
+            userId: creatorId,
+            actionType: "create_thread",
+            targetId: _id,
+            detail: "Thread created",
+        });
 
-/* ======================================================
-   2) Get Threads by Course
-   Scenario:
-   - Students view course-specific threads
-====================================================== */
-export const getThreadsByCourse = async (req, res) => {
-  try {
-    const threads = await Thread.find({
-      courseID: req.params.courseID,
-      status: "active"
-    }).sort({ pinned: -1, lastActivityAt: -1 });
-
-    res.json(threads);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-/* ======================================================
-   3) Get Single Thread
-====================================================== */
-export const getThreadById = async (req, res) => {
-  try {
-    const thread = await Thread.findById(req.params.threadID);
-    if (!thread) return res.status(404).json({ message: "Thread not found" });
-
-    res.json(thread);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-/* ======================================================
-   4) Pin / Unpin Thread (Instructor / Admin)
-====================================================== */
-export const togglePinThread = async (req, res) => {
-  try {
-    const thread = await Thread.findById(req.params.threadID);
-    if (!thread) return res.status(404).json({ message: "Thread not found" });
-
-    thread.pinned = !thread.pinned;
-    await thread.save();
-
-    await ActivityLog.create({
-      userID: req.body.userID,
-      actionType: "PIN_THREAD",
-      targetID: thread._id,
-      detail: `Thread ${thread.pinned ? "pinned" : "unpinned"}`
-    });
-
-    res.json(thread);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-
-export const updateThread = async (req, res) => {
-  try {
-    const thread = await Thread.findById(req.params.threadID);
-    if (!thread) return res.status(404).json({ message: "Thread not found" });
-
-    if (
-      req.user.id !== String(thread.creatorID) &&
-      !["admin"].includes(req.user.role)
-    ) {
-      return res.status(403).json({ message: "Unauthorized" });
+        res.status(201).json(thread);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
-
-    thread.title = req.body.title ?? thread.title;
-    thread.tags = req.body.tags ?? thread.tags;
-    await thread.save();
-
-    await ActivityLog.create({
-      userID: req.user.id,
-      actionType: "UPDATE_THREAD",
-      targetID: thread._id,
-      detail: "Thread updated"
-    });
-
-    res.json(thread);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 };
 
+/* ======================================================
+   GET THREADS BY COURSE  ✅ (USED BY Threads.jsx)
+====================================================== */
+export const getThreadsByCourse = async(req, res) => {
+    try {
+        const { courseId } = req.params;
 
-export const deleteThread = async (req, res) => {
-  try {
-    const thread = await Thread.findById(req.params.threadID);
-    if (!thread) return res.status(404).json({ message: "Thread not found" });
+        const threads = await Thread.find({
+            courseId,
+            status: "active",
+        }).sort({ pinned: -1, lastActivityAt: -1 });
 
-    if (
-      req.user.id !== String(thread.creatorID) &&
-      req.user.role !== "admin"
-    ) {
-      return res.status(403).json({ message: "Unauthorized" });
+        res.status(200).json(threads);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
+};
 
-    thread.status = "removed";
-    await thread.save();
+/* ======================================================
+   GET SINGLE THREAD
+====================================================== */
+export const getThreadById = async(req, res) => {
+    try {
+        const thread = await Thread.findOne({ _id: req.params.threadId });
+        if (!thread) {
+            return res.status(404).json({ message: "Thread not found" });
+        }
 
-    await ActivityLog.create({
-      userID: req.user.id,
-      actionType: "DELETE_THREAD",
-      targetID: thread._id,
-      detail: "Thread removed"
-    });
+        res.status(200).json(thread);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
 
-    res.json({ message: "Thread removed" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+/* ======================================================
+   PIN / UNPIN THREAD
+====================================================== */
+export const togglePinThread = async(req, res) => {
+    try {
+        const thread = await Thread.findOne({ _id: req.params.threadId });
+        if (!thread) {
+            return res.status(404).json({ message: "Thread not found" });
+        }
+
+        thread.pinned = !thread.pinned;
+        await thread.save();
+
+        await ActivityLog.create({
+            _id: `AL-${Date.now()}`,
+            userId: req.body.userId,
+            actionType: "pin_thread",
+            targetId: thread._id,
+            detail: thread.pinned ? "Thread pinned" : "Thread unpinned",
+        });
+
+        res.status(200).json(thread);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+/* ======================================================
+   DELETE THREAD (soft delete)
+====================================================== */
+export const deleteThread = async(req, res) => {
+    try {
+        const thread = await Thread.findOne({ _id: req.params.threadId });
+        if (!thread) {
+            return res.status(404).json({ message: "Thread not found" });
+        }
+
+        thread.status = "inactive";
+        await thread.save();
+
+        await ActivityLog.create({
+            _id: `AL-${Date.now()}`,
+            userId: req.body.userId,
+            actionType: "delete_thread",
+            targetId: thread._id,
+            detail: "Thread marked inactive",
+        });
+
+        res.status(200).json({ message: "Thread deleted" });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };

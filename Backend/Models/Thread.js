@@ -41,4 +41,6 @@ const ThreadSchema = new mongoose.Schema({
     versionKey: false,
 });
 
-export default mongoose.model("threads", ThreadSchema);
+// ✅ SAFE EXPORT (IMPORTANT)
+export default mongoose.models.threads ||
+    mongoose.model("threads", ThreadSchema);

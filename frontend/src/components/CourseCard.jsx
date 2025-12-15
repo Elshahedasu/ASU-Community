@@ -1,6 +1,7 @@
 // src/components/CourseCard.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/app.css";
 
 const CourseCard = ({ course }) => {
   const navigate = useNavigate();

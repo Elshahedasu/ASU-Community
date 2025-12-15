@@ -1,43 +1,62 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getQuestionsByThread } from "../services/questionService";
 import API from "../services/api";
-import Reply from "../components/Reply";
+import "../styles/app.css";
 
-export default function Questions() {
+const Questions = () => {
   const { threadId } = useParams();
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const [questions, setQuestions] = useState([]);
   const [content, setContent] = useState("");
 
+  const load = async () => {
+    const data = await getQuestionsByThread(threadId);
+    setQuestions(data);
+  };
+
   useEffect(() => {
-    API.get(`/questions/${threadId}`).then(res => setQuestions(res.data));
+    load();
   }, [threadId]);
 
-  const askQuestion = async () => {
-    await API.post("/questions", {
+  const post = async (e) => {
+    e.preventDefault();
+    await API.post("/api/questions", {
+      _id: `Q-${Date.now()}`,
       threadId,
-      authorId: "U101",
-      content
+      authorId: user._id,
+      content,
     });
     setContent("");
+    load();
   };
 
   return (
-    <div>
-      <h2>Questions</h2>
+    <div className="page-container">
+      <h2 className="section-title">Questions</h2>
 
-      <input
-        placeholder="Ask a question"
-        value={content}
-        onChange={e => setContent(e.target.value)}
-      />
-      <button onClick={askQuestion}>Post</button>
+      <form className="form" onSubmit={post}>
+        <textarea
+          className="textarea"
+          value={content}
+          onChange={e => setContent(e.target.value)}
+          placeholder="Ask a question..."
+          required
+        />
+        <button className="btn btn-primary">Post</button>
+      </form>
 
-      {questions.map(q => (
-        <div key={q._id}>
-          <p>{q.content}</p>
-          <Reply questionId={q._id} />
-        </div>
-      ))}
+      <div className="list">
+        {questions.map(q => (
+          <div key={q._id} className="list-item">
+            <strong>{q.content}</strong>
+            <p className="meta">Author: {q.authorId}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
-}
+};
+
+export default Questions;

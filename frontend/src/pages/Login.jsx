@@ -12,19 +12,39 @@ export default function Login() {
       return;
     }
 
-      const res = await fetch("http://localhost:5200/api/users/login", {
+    try {
+      const res = await fetch("http://localhost:5200/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
-      }); 
+      });
 
-     if(!res.ok){
-      alert("Email or Paswword dont exist");
-      return;
-     } 
-    navigate("/home");
+      if (!res.ok) {
+        alert("Invalid email or password");
+        return;
+      }
+
+      const data = await res.json();
+
+      // ✅ SAVE TOKEN & USER
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // ✅ ROLE-BASED REDIRECT
+      if (data.user.role === "student") {
+        navigate("/home");
+      } else if (data.user.role === "instructor") {
+        navigate("/instructor/home");
+      } else if (data.user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/login");
+      }
+    } catch (err) {
+      alert("Server error");
+    }
   };
 
   return (

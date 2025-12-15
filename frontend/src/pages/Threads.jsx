@@ -1,23 +1,50 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { getThreadsByCourse } from "../services/threadService";
+import API from "../services/api";
+import "../styles/app.css";
 
-export default function Threads() {
-  const navigate = useNavigate();
+const Threads = () => {
+  const { courseId } = useParams();
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const [threads, setThreads] = useState([]);
+
+  useEffect(() => {
+    getThreadsByCourse(courseId).then(setThreads);
+  }, [courseId]);
+
+  const subscribe = async (id) => {
+    await API.post("/api/thread-subscriptions", {
+      userId: user._id,
+      threadId: id,
+    });
+    alert("Subscribed");
+  };
 
   return (
-    <div className="container">
-      <h2>Database Systems – Threads</h2>
+    <div className="page-container">
+      <h2 className="section-title">Course Threads</h2>
 
-      <div className="card">
-        <h3>MongoDB Schema Design Tips</h3>
-        <p>Discussion about embedding vs referencing documents.</p>
-        <button onClick={() => navigate("/thread/1")}>
-          View Thread
-        </button>
+      <div className="list">
+        {threads.map(t => (
+          <div key={t._id} className="list-item">
+            <Link to={`/questions/${t._id}`} className="list-title">
+              {t.title}
+            </Link>
+            {t.pinned && <span className="pin">📌</span>}
+
+            <button
+              className="btn btn-primary"
+              onClick={() => subscribe(t._id)}
+            >
+              Subscribe
+            </button>
+          </div>
+        ))}
       </div>
-
-      <button className="secondary" onClick={() => navigate("/create-thread")}>
-        Create New Thread
-      </button>
     </div>
   );
-}
+};
+
+export default Threads;

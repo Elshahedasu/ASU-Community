@@ -5,16 +5,16 @@ const ActivityLogSchema = new mongoose.Schema({
         type: String, // "AL12001"
         required: true,
     },
-    userId: {
+    userID: {
         type: String, // "U1001"
         required: true,
     },
     actionType: {
-        type: String, // "posted_question", "replied", etc.
+        type: String,
         required: true,
     },
-    targetId: {
-        type: String, // "Q5001", "R6001", etc.
+    targetID: {
+        type: String, // "C200", "Q5001", etc.
         required: true,
     },
     detail: {
