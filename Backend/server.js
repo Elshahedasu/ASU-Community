@@ -31,7 +31,7 @@ app.use(
         origin: [
             "http://localhost:3000",
             "http://localhost:5174",
-            "https://asu-community-iyle.vercel.app" // ✅ YOUR VERCEL FRONTEND
+            "https://asu-community-iyle-git-main-elshahedasus-projects.vercel.app"
         ],
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
@@ -39,7 +39,7 @@ app.use(
     })
 );
 
-// ✅ HANDLE PREFLIGHT REQUESTS (THIS FIXES THE ERROR)
+// ✅ HANDLE PREFLIGHT REQUESTS
 app.options("*", cors());
 
 // BODY PARSER
