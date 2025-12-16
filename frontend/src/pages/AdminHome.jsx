@@ -77,7 +77,7 @@ const AdminHome = () => {
      USER ACTIONS
   ====================== */
   const toggleUserStatus = async (id, status) => {
-    await API.patch(/api/admin/users/${id}, {
+    await API.patch(`/api/admin/users/${id}`, {
       status: status === "active" ? "inactive" : "active",
     });
 
@@ -92,7 +92,7 @@ const AdminHome = () => {
 
   const deleteUser = async (id) => {
     if (!window.confirm("Delete this user permanently?")) return;
-    await API.delete(/api/admin/users/${id});
+    await API.delete(`/api/admin/users/${id}`);
     setUsers(prev => prev.filter(u => u._id !== id));
   };
 
@@ -100,7 +100,7 @@ const AdminHome = () => {
      COURSE ACTIONS
   ====================== */
   const toggleCourseStatus = async (id, status) => {
-    await API.patch(/api/admin/courses/${id}, {
+    await API.patch(`/api/admin/courses/${id}`, {
       status: status === "active" ? "inactive" : "active",
     });
 
@@ -118,7 +118,7 @@ const AdminHome = () => {
     if (!instructorId) return;
 
     const res = await API.patch(
-      /api/admin/courses/${courseId}/instructors/add,
+      `/api/admin/courses/${courseId}/instructors/add`,
       { instructorId }
     );
 
@@ -129,7 +129,7 @@ const AdminHome = () => {
 
   const removeInstructor = async (courseId, instructorId) => {
     const res = await API.patch(
-      /api/admin/courses/${courseId}/instructors/remove,
+      `/api/admin/courses/${courseId}/instructors/remove`,
       { instructorId }
     );
 
@@ -174,7 +174,7 @@ const AdminHome = () => {
 
   const deleteCourse = async (courseId) => {
     if (!window.confirm("Delete this course permanently?")) return;
-    await API.delete(/api/admin/courses/${courseId});
+    await API.delete(`/api/admin/courses/${courseId}`);
     setCourses(prev => prev.filter(c => c._id !== courseId));
   };
 
@@ -182,7 +182,7 @@ const AdminHome = () => {
      REPORT ACTIONS
   ====================== */
   const resolveReport = async (id) => {
-    await API.patch(/api/reports/${id}/resolve);
+    await API.patch(`/api/reports/${id}/resolve`);
 
     setReports(prev =>
       prev.map(r =>
@@ -258,7 +258,7 @@ const AdminHome = () => {
                 <p>Role: {u.role}</p>
                 <p>
                   Status:{" "}
-                  <span className={status ${u.status}}>{u.status}</span>
+                  <span className={`status ${u.status}`}>{u.status}</span>
                 </p>
 
                 <div className="card-actions">
@@ -299,7 +299,7 @@ const AdminHome = () => {
                   <p>Students: {c.totalStudents ?? 0}</p>
                   <p>
                     Status:{" "}
-                    <span className={status ${c.status}}>{c.status}</span>
+                    <span className={`status ${c.status}`}>{c.status}</span>
                   </p>
 
                   <p>Instructors:</p>
@@ -354,7 +354,7 @@ const AdminHome = () => {
                 <p>Course: {t.courseId}</p>
                 <p>
                   Status:{" "}
-                  <span className={status ${t.status}}>{t.status}</span>
+                  <span className={`status ${t.status}`}>{t.status}</span>
                 </p>
               </div>
             ))}
@@ -371,7 +371,7 @@ const AdminHome = () => {
                 <p>{r.reason}</p>
                 <p>
                   Status:{" "}
-                  <span className={status ${r.status}}>{r.status}</span>
+                  <span className={`status ${r.status}`}>{r.status}</span>
                 </p>
 
                 {r.status === "pending" && (
