@@ -57,7 +57,6 @@ const Questions = () => {
       <div className="questions-page">
         <div className="questions-card">
 
-          {/* 🔙 CARD HEADER – SAME AS CreateThread & Announcements */}
           <div className="card-header page-nav-style">
             <button
               className="page-nav-back"
@@ -65,11 +64,9 @@ const Questions = () => {
             >
               ← Back
             </button>
-
             <h2 className="page-nav-title">Questions</h2>
           </div>
 
-          {/* ================= ASK QUESTION ================= */}
           {user?.role === "student" && (
             <form className="question-form-card" onSubmit={postQuestion}>
               <textarea
@@ -85,7 +82,6 @@ const Questions = () => {
             </form>
           )}
 
-          {/* ================= QUESTIONS + REPLIES ================= */}
           <div className="question-card-list">
             {questions.map((q) => (
               <div key={q._id} className="question-card">
@@ -96,7 +92,7 @@ const Questions = () => {
                   </p>
                 </div>
 
-                {/* REPLIES */}
+                {/* Replies + notifications logic is inside Replies */}
                 <Replies questionId={q._id} />
               </div>
             ))}

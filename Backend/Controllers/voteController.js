@@ -1,54 +1,62 @@
 import Vote from "../Models/Vote.js";
 import Reply from "../Models/Reply.js";
 import ActivityLog from "../Models/ActivityLog.js";
+import Notification from "../Models/Notification.js";
 
 export const voteReply = async (req, res) => {
   try {
     const { userId, replyId, voteType } = req.body;
 
-    // ✅ Validate input
     if (!userId || !replyId || !voteType) {
-      return res.status(400).json({ message: "Missing required fields" });
+      return res.status(400).json({ message: "Missing fields" });
     }
 
-    // ✅ Prevent duplicate voting
-    const existingVote = await Vote.findOne({
+    const existing = await Vote.findOne({
       userId,
       targetId: replyId,
     });
 
-    if (existingVote) {
+    if (existing) {
       return res.status(409).json({ message: "Already voted" });
     }
 
-    // ✅ Create vote (MATCHES SCHEMA)
     await Vote.create({
-      _id: `V-${Date.now()}`,       // REQUIRED
+      _id: `V-${Date.now()}`,
       userId,
       targetId: replyId,
       targetType: "reply",
-      voteType,                     // "upvote" | "downvote"
+      voteType,
     });
 
-    // ✅ INCREMENT UPVOTES (FIXED CONDITION)
     if (voteType === "upvote") {
       await Reply.findByIdAndUpdate(replyId, {
         $inc: { upvotes: 1 },
       });
     }
 
-    // ✅ Activity log (MATCHES YOUR MODEL)
+    const reply = await Reply.findById(replyId);
+
+    // 🔔 NOTIFY REPLY AUTHOR
+    if (reply && reply.authorId !== userId) {
+      await Notification.create({
+        _id: `N-${Date.now()}`,
+        userId: reply.authorId,
+        type: "vote",
+        payload: "Your reply received an upvote",
+        read: false,
+      });
+    }
+
     await ActivityLog.create({
       _id: `AL-${Date.now()}`,
       userID: userId,
       actionType: "UPVOTE_REPLY",
       targetID: replyId,
-      detail: "User upvoted a reply",
+      detail: "User upvoted reply",
     });
 
-    res.status(200).json({ message: "Vote recorded" });
+    res.json({ message: "Vote recorded" });
   } catch (err) {
-    console.error("VOTE ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };

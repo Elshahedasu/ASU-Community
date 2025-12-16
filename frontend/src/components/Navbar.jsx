@@ -1,12 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [unread, setUnread] = useState(0);
+
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+
+  useEffect(() => {
+    if (!user) {
+      setUnread(0);
+      return;
+    }
+
+    const fetchUnread = async () => {
+      try {
+        const res = await API.get("/api/notifications/unread-count", {
+          params: { userId: user._id },   // ✅ PER USER
+        });
+        setUnread(res.data.unread);
+      } catch (err) {
+        console.error("Unread count error", err);
+        setUnread(0);
+      }
+    };
+
+    fetchUnread();
+  }, [user?._id]);   // ✅ KEY FIX (per-user)
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.clear();
+    setUnread(0);
     navigate("/login");
   };
 
@@ -16,21 +41,14 @@ const Navbar = () => {
         <h2 className="logo">DB ASU Community</h2>
 
         <div className="nav-links">
-          <Link to="/home" className="nav-link">
-            Home
+          <Link to="/home" className="nav-link">Home</Link>
+
+          <Link to="/notifications" className="nav-link">
+            🔔 Notifications
+            {unread > 0 && <span className="badge">{unread}</span>}
           </Link>
 
-          <span
-            className="nav-link disabled"
-            onClick={() => navigate("/home")}
-            title="Select a course first"
-          >
-
-          </span>
-
-          <Link to="/profile" className="nav-link">
-            Profile
-          </Link>
+          <Link to="/profile" className="nav-link">Profile</Link>
 
           <button className="logout-btn" onClick={handleLogout}>
             Logout
