@@ -28,15 +28,18 @@ const app = express();
 ====================== */
 app.use(
     cors({
-        origin: true, // allow dynamic Vercel preview domains
+        origin: (origin, callback) => {
+            // allow server-to-server & tools
+            if (!origin) return callback(null, true);
+
+            // allow ALL Vercel preview domains safely
+            return callback(null, origin);
+        },
+        credentials: true,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
-        credentials: true,
     })
 );
-
-// ✅ EXPRESS 5 FIX (THIS WAS CRASHING YOUR SERVER)
-app.options("/*", cors());
 
 // BODY PARSER
 app.use(express.json({ limit: "10mb" }));
@@ -72,7 +75,6 @@ try {
     console.log("✅ MongoDB connected successfully");
 
     const PORT = process.env.PORT || 5200;
-
     app.listen(PORT, () => {
         console.log(`✅ Server running on port ${PORT}`);
     });
