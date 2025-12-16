@@ -26,13 +26,15 @@ const app = express();
 /* ======================
    MIDDLEWARE
 ====================== */
+
+// ✅ CORS — FIXED for Railway + Vercel
 app.use(
     cors({
         origin: (origin, callback) => {
-            // allow server-to-server & tools
+            // allow server-to-server & tools like Postman
             if (!origin) return callback(null, true);
 
-            // allow ALL Vercel preview domains safely
+            // allow all Vercel domains safely
             return callback(null, origin);
         },
         credentials: true,
@@ -40,6 +42,9 @@ app.use(
         allowedHeaders: ["Content-Type", "Authorization"],
     })
 );
+
+// ✅ REQUIRED to handle preflight requests
+app.options("*", cors());
 
 // BODY PARSER
 app.use(express.json({ limit: "10mb" }));
