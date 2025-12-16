@@ -7,7 +7,23 @@ import {
     deleteThread
 } from "../Controllers/threadController.js";
 
+import Thread from "../Models/Thread.js";
+
 const router = express.Router();
+
+/* ======================================================
+   ADMIN (ADDED — NO CHANGES)
+====================================================== */
+
+// ✅ GET ALL THREADS (Admin dashboard)
+router.get("/", async(req, res) => {
+    try {
+        const threads = await Thread.find();
+        res.json(threads);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 /* ======================================================
    Thread Routes
@@ -20,7 +36,7 @@ const router = express.Router();
 router.post("/", createThread);
 
 /**
- * Get all threads for a course  ✅ (USED BY Threads.jsx)
+ * Get all threads for a course
  * GET /api/threads/course/:courseId
  */
 router.get("/course/:courseId", getThreadsByCourse);
