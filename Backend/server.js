@@ -28,19 +28,15 @@ const app = express();
 ====================== */
 app.use(
     cors({
-        origin: true, // ✅ allow whatever origin is requesting
+        origin: true, // allow dynamic Vercel preview domains
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
     })
 );
 
-// handle preflight requests
-app.options("*", cors());
-
-
-// ✅ HANDLE PREFLIGHT REQUESTS
-app.options("*", cors());
+// ✅ EXPRESS 5 FIX (THIS WAS CRASHING YOUR SERVER)
+app.options("/*", cors());
 
 // BODY PARSER
 app.use(express.json({ limit: "10mb" }));
