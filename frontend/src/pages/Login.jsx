@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../services/api"; // adjust path if needed
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -13,20 +14,10 @@ export default function Login() {
     }
 
     try {
-      const response = await fetch("http://localhost:5200/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const { data } = await API.post("/api/auth/login", {
+        email,
+        password,
       });
-
-      if (!response.ok) {
-        alert("Invalid email or password");
-        return;
-      }
-
-      const data = await response.json();
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
@@ -41,7 +32,7 @@ export default function Login() {
         navigate("/login");
       }
     } catch (error) {
-      alert("Server error. Please try again later.");
+      alert("Invalid email or password");
     }
   };
 
@@ -72,7 +63,10 @@ export default function Login() {
 
           <p className="auth-footer">
             No account?{" "}
-            <span className="auth-link" onClick={() => navigate("/register")}>
+            <span
+              className="auth-link"
+              onClick={() => navigate("/register")}
+            >
               Register
             </span>
           </p>
