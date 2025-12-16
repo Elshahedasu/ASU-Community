@@ -32,7 +32,10 @@ export default function Login() {
         navigate("/login");
       }
     } catch (error) {
-      alert("Invalid email or password");
+      alert(
+        error.response?.data?.message ||
+        "Invalid email or password"
+      );
     }
   };
 

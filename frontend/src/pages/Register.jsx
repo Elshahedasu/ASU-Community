@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../services/api"; // adjust path if needed
 
 export default function Register() {
   const navigate = useNavigate();
@@ -16,31 +17,22 @@ export default function Register() {
     }
 
     try {
-      const response = await fetch("http://localhost:5200/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          _id: `U${Date.now()}`,
-          name,
-          email,
-          password,
-          role,
-          institutionId: "I100",
-        }),
+      await API.post("/api/auth/register", {
+        _id: `U${Date.now()}`,
+        name,
+        email,
+        password,
+        role,
+        institutionId: "I100",
       });
-
-      if (!response.ok) {
-        const err = await response.json();
-        alert(err.message || "Registration failed");
-        return;
-      }
 
       alert("Registration successful. Please login.");
       navigate("/login");
     } catch (error) {
-      alert("Server error. Please try again later.");
+      alert(
+        error.response?.data?.message ||
+        "Registration failed. Please try again."
+      );
     }
   };
 
@@ -87,7 +79,10 @@ export default function Register() {
 
           <p className="auth-footer">
             Already have an account?{" "}
-            <span className="auth-link" onClick={() => navigate("/login")}>
+            <span
+              className="auth-link"
+              onClick={() => navigate("/login")}
+            >
               Login
             </span>
           </p>
